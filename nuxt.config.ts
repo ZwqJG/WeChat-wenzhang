@@ -36,9 +36,6 @@ export default defineNuxtConfig({
   },
   nitro: {
     minify: process.env.NODE_ENV === 'production',
-    rollupConfig: {
-      external: ['puppeteer'],
-    },
     storage: {
       kv: {
         driver: process.env.NITRO_KV_DRIVER || 'memory',
@@ -67,7 +64,7 @@ export default defineNuxtConfig({
     enabled: true,
     id: process.env.NUXT_UMAMI_ID,
     host: process.env.NUXT_UMAMI_HOST,
-    domains: ['down.mptext.top'],
+    domains: process.env.NUXT_UMAMI_DOMAINS?.split(',') || [],
     ignoreLocalhost: true,
     autoTrack: true,
     logErrors: true,
