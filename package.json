@@ -5,7 +5,7 @@
   "scripts": {
     "debug": "nuxt dev --inspect",
     "dev": "nuxt dev",
-    "build": "nuxt build",
+    "build": "NODE_OPTIONS='--max-old-space-size=4096' nuxt build",
     "format": "biome check --write",
     "postinstall": "nuxt prepare"
   },
