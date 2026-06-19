@@ -647,8 +647,7 @@ export class Exporter extends BaseDownloader {
     const ipWordingMatchResult = html.match(/window\.ip_wording = (?<data>{\s+countryName: '[^']+',[^}]+})/s);
     if (ipWrp && ipWording && ipWordingMatchResult && ipWordingMatchResult.groups && ipWordingMatchResult.groups.data) {
       const json = ipWordingMatchResult.groups.data;
-      // eslint-disable-next-line no-eval
-      eval('window.ip_wording = ' + json);
+      window.ip_wording = Function(`return (${json})`)();
       const ipWordingDisplay = getIpWoridng((window as any).ip_wording);
       if (ipWordingDisplay !== '') {
         ipWording.innerHTML = ipWordingDisplay;
@@ -743,8 +742,7 @@ export class Exporter extends BaseDownloader {
       const qmtplTextMatchResult = html.match(/(?<code>window\.__QMTPL_SSR_DATA__\s*=\s*\{.+?};)/s);
       if (qmtplTextMatchResult && qmtplTextMatchResult.groups && qmtplTextMatchResult.groups.code) {
         const code = qmtplTextMatchResult.groups.code;
-        // eslint-disable-next-line no-eval
-        eval(code);
+        Function(code)();
         const data = (window as any).__QMTPL_SSR_DATA__;
         if (data && typeof data.title === 'string' && !$js_text_desc.innerHTML.trim()) {
           let text = data.title as string;
@@ -767,8 +765,7 @@ export class Exporter extends BaseDownloader {
         const assignFromMatch = (match: RegExpMatchArray | null, key: string) => {
           if (match && match.groups && match.groups.value) {
             const code = `window.${key} = ${match.groups.value}`;
-            // eslint-disable-next-line no-eval
-            eval(code);
+            Function(code)();
             // @ts-ignore
             return (window as any)[key] as string;
           }
@@ -837,7 +834,7 @@ export class Exporter extends BaseDownloader {
       const qmtplMatchResult = html.match(/(?<code>window\.__QMTPL_SSR_DATA__\s*=\s*\{.+?)<\/script>/s);
       if (qmtplMatchResult && qmtplMatchResult.groups && qmtplMatchResult.groups.code) {
         const code = qmtplMatchResult.groups.code;
-        eval(code);
+        Function(code)();
         const data = (window as any).__QMTPL_SSR_DATA__;
         let desc = data.desc.replace(/\r/g, '').replace(/\n/g, '<br>').replace(/\s/g, '&nbsp;');
         desc = decode_html(desc, false);
@@ -848,7 +845,7 @@ export class Exporter extends BaseDownloader {
       const pictureMatchResult = html.match(/(?<code>window\.picture_page_info_list\s*=.+\.slice\(0,\s*20\);)/s);
       if (pictureMatchResult && pictureMatchResult.groups && pictureMatchResult.groups.code) {
         const code = pictureMatchResult.groups.code;
-        eval(code);
+        Function(code)();
         const picture_page_info_list = (window as any).picture_page_info_list;
         const containerEl = $jsArticleContent.querySelector('#js_share_content_page_hd')!;
         let innerHTML =

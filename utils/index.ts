@@ -190,8 +190,7 @@ export async function packHTMLAssets(fakeid: string, html: string, title: string
   const ipWordingMatchResult = html.match(/window\.ip_wording = (?<data>{\s+countryName: '[^']+',[^}]+})/s);
   if (ipWrp && ipWording && ipWordingMatchResult && ipWordingMatchResult.groups && ipWordingMatchResult.groups.data) {
     const json = ipWordingMatchResult.groups.data;
-    // eslint-disable-next-line no-eval
-    eval('window.ip_wording = ' + json);
+    window.ip_wording = Function(`return (${json})`)();
     const ipWordingDisplay = getIpWoridng((window as any).ip_wording);
     if (ipWordingDisplay !== '') {
       ipWording.innerHTML = ipWordingDisplay;
@@ -226,8 +225,7 @@ export async function packHTMLAssets(fakeid: string, html: string, title: string
     const qmtplTextMatchResult = html.match(/(?<code>window\.__QMTPL_SSR_DATA__\s*=\s*\{.+?};)/s);
     if (qmtplTextMatchResult && qmtplTextMatchResult.groups && qmtplTextMatchResult.groups.code) {
       const code = qmtplTextMatchResult.groups.code;
-      // eslint-disable-next-line no-eval
-      eval(code);
+      Function(code)();
       const data = (window as any).__QMTPL_SSR_DATA__;
       if (data && typeof data.title === 'string' && !$js_text_desc.innerHTML.trim()) {
         let text = data.title as string;
@@ -250,8 +248,7 @@ export async function packHTMLAssets(fakeid: string, html: string, title: string
       const assignFromMatch = (match: RegExpMatchArray | null, key: string) => {
         if (match && match.groups && match.groups.value) {
           const code = `window.${key} = ${match.groups.value}`;
-          // eslint-disable-next-line no-eval
-          eval(code);
+          Function(code)();
           // @ts-ignore
           return (window as any)[key] as string;
         }
@@ -443,7 +440,7 @@ export async function packHTMLAssets(fakeid: string, html: string, title: string
     const qmtplMatchResult = html.match(/(?<code>window\.__QMTPL_SSR_DATA__\s*=\s*\{.+?)<\/script>/s);
     if (qmtplMatchResult && qmtplMatchResult.groups && qmtplMatchResult.groups.code) {
       const code = qmtplMatchResult.groups.code;
-      eval(code);
+      Function(code)();
       const data = (window as any).__QMTPL_SSR_DATA__;
       let desc = data.desc.replace(/\r/g, '').replace(/\n/g, '<br>').replace(/\s/g, '&nbsp;');
       desc = decode_html(desc, false);
@@ -454,7 +451,7 @@ export async function packHTMLAssets(fakeid: string, html: string, title: string
     const pictureMatchResult = html.match(/(?<code>window\.picture_page_info_list\s*=.+\.slice\(0,\s*20\);)/s);
     if (pictureMatchResult && pictureMatchResult.groups && pictureMatchResult.groups.code) {
       const code = pictureMatchResult.groups.code;
-      eval(code);
+      Function(code)();
       const picture_page_info_list = (window as any).picture_page_info_list;
       const containerEl = $jsArticleContent.querySelector('#js_share_content_page_hd')!;
       let innerHTML =
@@ -478,7 +475,7 @@ export async function packHTMLAssets(fakeid: string, html: string, title: string
     );
     if (videoContentMatchResult && videoContentMatchResult.groups && videoContentMatchResult.groups.value) {
       const code = 'window.videoContentNoEncode = ' + videoContentMatchResult.groups.value;
-      eval(code);
+      Function(code)();
       let desc = (window as any).videoContentNoEncode;
       desc = desc.replace(/\r/g, '').replace(/\n/g, '<br>');
       $js_common_share_desc.innerHTML = desc;
@@ -492,7 +489,7 @@ export async function packHTMLAssets(fakeid: string, html: string, title: string
     const mpVideoCoverUrlMatchResult = html.match(/(?<code>window\.__mpVideoCoverUrl\s*=\s*'[^']*';)/s);
     if (mpVideoCoverUrlMatchResult && mpVideoCoverUrlMatchResult.groups && mpVideoCoverUrlMatchResult.groups.code) {
       const code = mpVideoCoverUrlMatchResult.groups.code;
-      eval(code);
+      Function(code)();
       poster = (window as any).__mpVideoCoverUrl;
     }
 
@@ -501,7 +498,7 @@ export async function packHTMLAssets(fakeid: string, html: string, title: string
     const mpVideoTransInfoMatchResult = html.match(/(?<code>window\.__mpVideoTransInfo\s*=\s*\[.+?];)/s);
     if (mpVideoTransInfoMatchResult && mpVideoTransInfoMatchResult.groups && mpVideoTransInfoMatchResult.groups.code) {
       const code = mpVideoTransInfoMatchResult.groups.code;
-      eval(code);
+      Function(code)();
       const mpVideoTransInfo = (window as any).__mpVideoTransInfo;
       if (Array.isArray(mpVideoTransInfo) && mpVideoTransInfo.length > 0) {
         mpVideoTransInfo.forEach((trans: any) => {
@@ -594,7 +591,7 @@ export async function packHTMLAssets(fakeid: string, html: string, title: string
   );
   if (videoPageInfosMatchResult && videoPageInfosMatchResult.groups && videoPageInfosMatchResult.groups.code) {
     const code = videoPageInfosMatchResult.groups.code;
-    eval(code);
+      Function(code)();
     const videoPageInfos: VideoPageInfo[] = (window as any).__videoPageInfos;
     videoPageInfos.forEach(videoPageInfo => {
       videoPageInfo.mp_video_trans_info.forEach(trans => {

@@ -103,7 +103,7 @@ function extractInfo(rawHTML: string) {
       },
     };
     try {
-      eval(scriptCode);
+      Function(scriptCode)();
     } catch (e) {
       console.error('eval execute js code fatal:', e);
     }
